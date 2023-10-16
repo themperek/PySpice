@@ -618,15 +618,11 @@ class NgSpiceShared:
         prefix, _, content = message.partition(' ')
         if prefix == 'stderr':
             self._stderr.append(content)
-            if content.startswith('Warning:'):
-                func = self._logger.warning
-            # elif content.startswith('Warning:'):
-            else:
+            if "Error:" in content:
                 self._error_in_stderr = True
                 func = self._logger.error
-                if content.strip() == "Note: can't find init file.":
-                    self._spinit_not_found = True
-                    self._logger.warning('spinit was not found')
+            else:
+                func = self._logger.warning
             func(content)
         else:
             self._stdout.append(content)
